@@ -1,0 +1,5 @@
+mspybooks.egg-info/PKG-INFO
+mspybooks.egg-info/SOURCES.txt
+mspybooks.egg-info/dependency_links.txt
+mspybooks.egg-info/not-zip-safe
+mspybooks.egg-info/top_level.txt

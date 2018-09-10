@@ -1,0 +1,5 @@
+[Desktop Entry]
+Exec=/home/smsthn/Documents/Py/gui/msbkspy/mainwindow.py
+Name=msbkspy
+Terminal=true
+Type=Application
