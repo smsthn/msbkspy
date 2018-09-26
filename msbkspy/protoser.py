@@ -15,19 +15,21 @@ class protoser:
         srbooks.ParseFromString(f.read())
         for srbook in srbooks.AllBooks:
             name = srbook.name
-            catagory = srbook.catagory
-            readingstatus = srbook.readingStatus
+            catagory = str(srbook.catagory)
+            readingstatus = str(srbook.readingStatus)
             pages = srbook.pages
-            tags = srbook.tags
+            tags = []
+            for tag in srbook.tags:
+                tags.append(str(tag))
             notes = srbook.notes
             book = msbks.Book(name,pages,catagory,readingstatus,tags,notes)
             books.AllBooks.append(book)
         for tag in srbooks.AllTags:
-            books.AllTags.append(tag)
+            books.AllTags.append(str(tag))
         for rdstts in srbooks.AllReadingStatus:
-            books.AllReadingStatus.append(rdstts)
+            books.AllReadingStatus.append(str(rdstts))
         for ctg in srbooks.AllCatagories:
-            books.AllCatagories.append(ctg)
+            books.AllCatagories.append(str(ctg))
         return books
     
     @staticmethod

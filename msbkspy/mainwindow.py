@@ -8,6 +8,7 @@ from books import Books, Book
 from configparser import SafeConfigParser
 import os.path
 import addwindows
+from bookdetailsframe import BookDetailsFrame
 
 
 class mainwindow:
@@ -43,10 +44,15 @@ class mainwindow:
         self.bkssearch.grid(row=2, column=1, padx=30, pady=10, sticky='nsew')
         self.bkslb = tk.Listbox(self.root, exportselection=False)
         self.bkslb.grid(row=3, column=1, padx=30, pady=10, sticky='nsew')
+        self.bkdt = BookDetailsFrame(self.root)
+        #self.bkdt.config(width=100,height=100)
+        self.bkdt.grid(row=3, column=2,padx=15,pady=15 ,sticky='nsew')
+        #self.bkdt.place(x=600,y=300,width=200,height=200)
+        
 
         self.root.columnconfigure(0, weight=1)
         self.root.columnconfigure(1, weight=1)
-        self.root.columnconfigure(2, weight=1)
+        self.root.columnconfigure(2, weight=0)
         self.root.rowconfigure(0, weight=0)
         self.root.rowconfigure(1, weight=1)
         self.root.rowconfigure(2, weight=0)
@@ -58,7 +64,7 @@ class mainwindow:
             self.btnframe, justify="center", text='Add', command=self.createaddwindow)
         self.addbtn.grid(row=1, column=1, padx=10, pady=10, sticky='we')
         self.removebtn = tk.Button(
-            self.btnframe, justify="center", text='Remove')
+            self.btnframe, justify="center", text='Remove',command=self.removeevent)
         self.removebtn.grid(row=2, column=1, padx=10, pady=10, sticky='we')
         self.savebtn = tk.Button(
             self.btnframe, justify="center", text='Save', command=self.saveevent)
@@ -82,6 +88,7 @@ class mainwindow:
         self.ctglb.bind("<<ListboxSelect>>", self.catagoryselectedevent)
         self.rdsttslb.bind("<<ListboxSelect>>",
                            self.readingstatusselectedevent)
+        self.bkslb.bind('<<ListboxSelect>>',self.bookselectEvent)
         self.tgslb.bind("<<ListboxSelect>>", self.tagsselectedevent)
         self.bkslb.bind('<Double-Button-1>', self.createmodifywindowdblclk)
         self.bkssearch.bind('<Key>', self.bookssearchevent)
@@ -206,6 +213,20 @@ class mainwindow:
         self.books.AllBooks.remove(book)
         self.getbooks()
         self.autoSaveevent()
+
+    def bookselectEvent(self,event):
+        if not self.bkslb.curselection():
+            return
+        if self.bkslb.curselection():
+            w = event.widget
+            index = w.curselection()[0]
+            bookname = w.get(index)
+            book= next((bk for bk in self.books.AllBooks if bk.Name.lower().strip() == bookname.lower().strip()),None)
+            if book == None:
+                return
+            self.bkdt.addbook(book)
+
+
 
     def msOpenFile(self):
         filename = filedialog.askopenfilename(

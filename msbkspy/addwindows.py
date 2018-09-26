@@ -12,6 +12,7 @@ class AddWindows(Toplevel):
         #self.pages=0
 
         self.columnconfigure(1,weight=1)
+        self.columnconfigure(2,weight=0)
         self.rowconfigure(5,weight=1)
         
 
@@ -50,6 +51,13 @@ class AddWindows(Toplevel):
         self.cancelbtn = Button(self.frame,text='Cancel',command=self.cancelevnt)
         self.cancelbtn.pack(anchor='e',side='right')
         
+        self.tgframe = Frame(self)
+        self.tgframe.grid(row=3,column=3)
+        self.tagsaddbtn =Button(self.tgframe,text='+',width=1,command=self.addtagevent)
+        self.tagsaddbtn.pack(side='right')
+        self.tagsremovebtn =Button(self.tgframe,text='-',width=1)
+        self.tagsremovebtn.pack(side='right')
+
         self.tgsdrop = Listbox(self,height=2,selectmode=MULTIPLE,exportselection=False)
         #self.tgsdrop.set('1')
         for tag in tagslist:
@@ -75,11 +83,16 @@ class AddWindows(Toplevel):
             
         else:
             self.book = book
+            self.name.set(book.Name)
+            self.catagory =book.Catagory
+            self.readingstatus = book.ReadingStatus
+            self.pages.set(book.Pages)
+            self.tags = book.Tags
             self.ctgcmbo.set(book.Catagory)
             self.rdsttscmbo.set(book.ReadingStatus)
             self.addbtn = Button(self.frame,text='Modify',command=self.modifybookevent)
             self.addbtn.pack(anchor='e',side='right')
-            self.name.set(book.Name)
+            
             
             
             if book.Tags:
@@ -127,6 +140,25 @@ class AddWindows(Toplevel):
     def tagsmouseleaveevent(self,event):
         self.tgsdrop.grid(row=3,rowspan =1,column=1,padx=15,pady=15,sticky='ew')
         self.tgsdrop.config(height=2)
+
+    def addtagevent(self):
+        self.addtagentry = Entry(self)
+        self.addtagentry.grid(row=3,column=1,padx=15,pady=15,sticky='ewsn')
+        self.addtagentry.bind('<Return>',self.addtagenter)
+        self.addtagentry.bind('<Escape>',self.destroythis)
+    def addtagenter(self,event):
+            if self.addtagentry.get().strip() == '':
+                self.destroythis(event)
+                return
+            else :
+                self.main.books.AllTags.append(self.addtagentry.get())
+                self.main.tgslb.insert(END,self.addtagentry.get())
+                self.tgsdrop.insert(END,self.addtagentry.get())
+                self.destroythis(event)
+                
+            self.destroythis(event)
+    def destroythis(self,event):
+            self.addtagentry.destroy()
         
         
 
