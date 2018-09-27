@@ -75,6 +75,9 @@ class mainwindow:
         self.loadbtn = tk.Button(
             self.btnframe, justify="center", text='Load', command=self.msOpenFile)
         self.loadbtn.grid(row=5, column=1, padx=10, pady=10, sticky='we')
+        self.uplaodbtn = tk.Button(
+            self.btnframe, justify="center", text='Upload', command=self.upload)
+        self.uplaodbtn.grid(row=6, column=1, padx=10, pady=10, sticky='we')
         self.btnframe.grid(row=3, column=0)
         self.btnframe.columnconfigure(0, weight=1)
         self.btnframe.columnconfigure(1, weight=1)
@@ -146,6 +149,12 @@ class mainwindow:
             return
 
         filename = config.get('path', 'prevopenpath')
+
+        from GdriveSer import GdriveSer
+        dr = GdriveSer()
+        nm = filename.split("/")
+        dr.downloadfile(filename,nm.pop())
+
         self.books = protoser.derserialize(filename)
         for ctg in self.books.AllCatagories:
             self.ctglb.insert(tk.END, ctg)
@@ -204,6 +213,24 @@ class mainwindow:
                 return
             filename = config.get('path', 'prevsavepath')
             protoser.serialize(filename, self.books)
+
+    def upload(self):
+        if self.books.AllBooks:
+            config = SafeConfigParser()
+            if not os.path.isfile('config.ini'):
+                return
+            config.read('config.ini')
+
+            if not config.has_section('path'):
+                return
+            if not config.has_option('path', 'prevsavepath'):
+                return
+            filename = config.get('path', 'prevsavepath')
+            protoser.serialize(filename, self.books)
+        from GdriveSer import GdriveSer
+        dr = GdriveSer()
+        nm = filename.split("/")
+        dr.uploadfile(filename,nm.pop())
 
     def removeevent(self):
         book = next((bk for bk in self.books.AllBooks if bk.Name ==
